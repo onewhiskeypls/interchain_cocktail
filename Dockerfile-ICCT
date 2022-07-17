@@ -1,0 +1,85 @@
+FROM onewhiskeypls/ubuntu-chrony
+
+SHELL ["/bin/bash", "-c"]
+
+ENV GO_VERSION=1.18.4
+
+ENV LOCAL=/usr/local
+ENV GOROOT=$LOCAL/go
+ENV HOME=/root
+ENV GOPATH=$HOME/go
+ENV PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+ENV DEVPATH=/root/dev
+
+RUN mkdir $DEVPATH
+
+WORKDIR $DEVPATH
+RUN mkdir -p $GOPATH/bin
+
+ENV PACKAGES curl gcc jq netcat git mercurial make binutils bison build-essential
+RUN apt update
+RUN apt install -y $PACKAGES
+
+# Install Go
+RUN curl -L https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz | tar -C $LOCAL -xzf -
+
+RUN apt install -y gcc wget ufw jq snapd trash-cli unzip
+
+RUN echo "INSTALL gaiad"
+# "https://hub.cosmos.network/main/getting-started/installation.html"
+
+RUN git clone https://github.com/cosmos/gaia.git
+WORKDIR $DEVPATH/gaia
+RUN git checkout v7.0.2
+RUN make install
+WORKDIR $DEVPATH
+RUN rm -rf gaia/
+RUN mv /root/go/bin/gaiad /usr/local/bin/gaiad
+
+
+RUN echo "INSTALL osmosisd"
+# "https://docs.osmosis.zone/developing/tools/osmosisd.html#install-osmosis-binary"
+
+RUN git clone https://github.com/osmosis-labs/osmosis
+WORKDIR $DEVPATH/osmosis
+RUN git checkout v10.0.1
+RUN make install
+WORKDIR $DEVPATH
+RUN rm -rf osmosis/
+RUN mv /root/go/bin/osmosisd /usr/local/bin/osmosisd
+
+RUN echo "INSTALL junod"
+# "https://docs.junonetwork.io/validators/getting-setup"
+
+RUN git clone https://github.com/CosmosContracts/juno
+WORKDIR $DEVPATH/juno
+RUN git fetch
+RUN git checkout v8.0.0
+RUN make install
+WORKDIR $DEVPATH
+RUN rm -rf juno/
+RUN mv /root/go/bin/junod /usr/local/bin/junod
+
+RUN echo "INSTALL terrad"
+# "https://docs.terra.money/docs/develop/terrad/install-terrad.html"
+
+RUN git clone https://github.com/terra-money/core
+WORKDIR $DEVPATH/core
+RUN git checkout v2.0.1
+RUN make install
+WORKDIR $DEVPATH
+RUN rm -rf core/
+RUN mv /root/go/bin/terrad /usr/local/bin/terrad
+
+RUN echo "INSTALL kujirad"
+# "https://docs.kujira.app/validators/run-a-node"
+
+RUN git clone https://github.com/Team-Kujira/core
+WORKDIR $DEVPATH/core
+RUN git checkout v0.4.0
+RUN make install
+WORKDIR $DEVPATH
+RUN rm -rf kujira-core/
+RUN mv /root/go/bin/kujirad /usr/local/bin/kujirad
+
+RUN trash-empty
