@@ -1,5 +1,5 @@
 # Interchain Cocktail of binaries/cli tools
-This is just a random assortment of Interchain binaries written so whoever wants to use them can.
+This is just a random assortment of Interchain binaries written so whoever wants to use them can.  On a later date I will document and breakdown the commands and their flags
 
 ## Recipe (v1)
 - 1 part gaiad v7.0.2
@@ -53,15 +53,39 @@ Notes
 Note: *You may need `sudo` in front of these commands depending on your account's permissions*
 
 ```
-docker build -f Dockerfile-ICCT . -t icct_i
+docker build -f Dockerfile-ICCT -t icct_i .
 ```
 
-- This will create the container, start it then push you in to the container in interactive mode
+- This will create the container then start the container
 ```
-docker create -i icct_i --name icct
+docker create --name icct -i icct_i
 docker start icct
+```
+
+If you're on an Apple silicone based machine you may need to execute like so
+```
+docker create --platform linux/amd64 --name icct -i icct_i
+docker start icct
+
+```
+
+- Choose one of the following in working here:
+If you want to connect to the container and operate in it
+```
 docker exec -it icct bash
 ```
+
+If you wish work outside of the container, you may do so here
+```
+docker exec -i icct [COMMAND]
+```
+Example query:
+```
+docker exec -i icct gaiad version
+```
+Alternatively, you may write a script that runs the queries for you and sorts out the data.
+
+**Note: Most data returned is encrypted, I will draft a separate doc going over that**
 
 - Optional while in the cli
 You may execute the following to ensure it's working properly
