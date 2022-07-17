@@ -35,7 +35,7 @@ This is just a random assortment of Interchain binaries written so whoever wants
 |Kujira|kujirad|v0.4.0| https://kujira-rpc.polkachu.com:443 |
 |Secret*|secretcli|v1.3.1| https://scrt-rpc.blockpane.com:443 |
 
-- you will need to manually install Secret. See instructions below
+Note- you will need to manually install Secret. See instructions below
 
 MISC Resources:
 - https://cosmos.directory/
@@ -58,9 +58,9 @@ docker build -f Dockerfile-ICCT . -t icct_i
 
 - This will create the container, start it then push you in to the container in interactive mode
 ```
-sudo docker create -i icct_i --name icct
-sudo start docker icct
-sudo exec -it icct bash
+docker create -i icct_i --name icct
+docker start icct
+docker exec -it icct bash
 ```
 
 - Optional while in the cli
