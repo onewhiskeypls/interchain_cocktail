@@ -5,6 +5,7 @@ This is just a random assortment of Interchain binaries written so whoever wants
 - 1 part gaiad v7.0.2
 - 1 part osmosisd v10.0.1
 - 1 part junod v8.0.0
+- 1 part terrad v2.0.1
 - 1 part kujirad v0.4.0
 
 ### Optional ingredients
