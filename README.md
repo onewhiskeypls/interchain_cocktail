@@ -12,18 +12,18 @@ This is just a random assortment of Interchain binaries written so whoever wants
 
 ## Notes
 1. This will build up to and use 5.4GB of space on your machine once the container is built, I will attempt to optimize this.
-  - Update: I failed
+    - Update: I failed
 2. Dockerfile was built on ubuntu:latest with chrony added
-  - This was established with a default of options 2 (America) and 85 (Los_Angeles).
-  - If you would like to reconfigure it execute the following:
-    - `dpkg-reconfigure tzdata`
-  - This was then uploaded to Docker Hub under onewhiskeypls/ubuntu-chrony
-  - I was not able to get debconf-set-selections to auto-input the selections, so I opted to just create an image for this
+    - This was established with a default of options 2 (America) and 85 (Los_Angeles).
+    - If you would like to reconfigure it execute the following:
+        - `dpkg-reconfigure tzdata`
+    - This was then uploaded to Docker Hub under onewhiskeypls/ubuntu-chrony
+    - I was not able to get debconf-set-selections to auto-input the selections, so I opted to just create an image for this
 3. Obligatory verify the script contents, do not simply trust me.
-  - You could take this script and build a different ubuntu w/ chrony
-  - `apt install -y chrony`
+    - You could take this script and build a different ubuntu w/ chrony
+    - `apt install -y chrony`
 4. A lot of the apt package installs were consolidated into 1 line
-  - See the worksheet.txt
+    - See the worksheet.txt
 
 ## Resources
 |Chain|Bin|Version|RPC|
@@ -44,10 +44,10 @@ MISC Resources:
 ## How to run
 Notes
 1. You will need Docker on your machine
-  - https://docs.docker.com/engine/install/
-  - https://docs.docker.com/get-docker/
+    - https://docs.docker.com/engine/install/
+    - https://docs.docker.com/get-docker/
 2. You will need git installed OR find your way to cloning this repo
-  - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+    - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 - Create the image
 Note: *You may need `sudo` in front of these commands depending on your account's permissions*
