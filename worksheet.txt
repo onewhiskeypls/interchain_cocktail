@@ -1,0 +1,39 @@
+# gvm (not used)
+curl git mercurial make binutils bison gcc build-essential
+
+# gaiad
+make gcc
+
+# osmosisd
+git build-essential ufw curl jq snapd
+
+# junod
+build-essential gcc git jq chrony
+
+# terrad
+build-essential
+
+# kujirad
+build-essential git unzip curl wget
+
+# COMBINED
+curl git mercurial make binutils bison gcc build-essential ufw jq snapd unzip wget
+
+TEMPLATE
+
+```
+
+RUN git clone {HTTPS_GIT_URL} $DEVPATH/chain
+WORKDIR $DEVPATH/chain
+RUN git checkout {BRANCH_VERSION}
+RUN make install
+WORKDIR $DEVPATH
+RUN rm -rf chain/
+RUN mv /root/go/bin/{BINARY_NAME} /usr/local/bin/{BINARY_NAME}
+
+```
+
+## script to build ubuntu-chrony
+sudo docker run -d -it ubuntu
+sudo docker container ls
+sudo docker exec -it {CONTAINER_NAME} bash

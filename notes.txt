@@ -23,7 +23,7 @@ MISC Resources:
 
 
 #
-sudo docker run -d -it ubuntu-chrony-gvm
+sudo docker run -d -it ubuntu-chrony
 sudo docker container ls
 
 # go into container created

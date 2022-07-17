@@ -13,73 +13,79 @@ ENV DEVPATH=/root/dev
 
 RUN mkdir $DEVPATH
 
+# docker build creates a new temp container each time, so you need to establish
+# WORKDIR because cd command does
 WORKDIR $DEVPATH
 RUN mkdir -p $GOPATH/bin
 
-ENV PACKAGES curl gcc jq netcat git mercurial make binutils bison build-essential
+ENV PACKAGES curl git mercurial make binutils bison gcc build-essential ufw jq snapd unzip wget trash-cli
 RUN apt update
+RUN apt upgrade -y
+RUN apt dist-upgrade -y
 RUN apt install -y $PACKAGES
 
 # Install Go
 RUN curl -L https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz | tar -C $LOCAL -xzf -
 
-RUN apt install -y gcc wget ufw jq snapd trash-cli unzip
-
 RUN echo "INSTALL gaiad"
 # "https://hub.cosmos.network/main/getting-started/installation.html"
 
-RUN git clone https://github.com/cosmos/gaia.git
-WORKDIR $DEVPATH/gaia
+RUN git clone https://github.com/cosmos/gaia.git $DEVPATH/chain
+WORKDIR $DEVPATH/chain
 RUN git checkout v7.0.2
 RUN make install
 WORKDIR $DEVPATH
-RUN rm -rf gaia/
+RUN rm -rf chain/
 RUN mv /root/go/bin/gaiad /usr/local/bin/gaiad
 
 
 RUN echo "INSTALL osmosisd"
 # "https://docs.osmosis.zone/developing/tools/osmosisd.html#install-osmosis-binary"
 
-RUN git clone https://github.com/osmosis-labs/osmosis
-WORKDIR $DEVPATH/osmosis
+RUN git clone https://github.com/osmosis-labs/osmosis $DEVPATH/chain
+WORKDIR $DEVPATH/chain
 RUN git checkout v10.0.1
 RUN make install
 WORKDIR $DEVPATH
-RUN rm -rf osmosis/
+RUN rm -rf chain/
 RUN mv /root/go/bin/osmosisd /usr/local/bin/osmosisd
 
 RUN echo "INSTALL junod"
 # "https://docs.junonetwork.io/validators/getting-setup"
 
-RUN git clone https://github.com/CosmosContracts/juno
-WORKDIR $DEVPATH/juno
+RUN git clone https://github.com/CosmosContracts/juno $DEVPATH/chain
+WORKDIR $DEVPATH/chain
 RUN git fetch
 RUN git checkout v8.0.0
 RUN make install
 WORKDIR $DEVPATH
-RUN rm -rf juno/
+RUN rm -rf chain/
 RUN mv /root/go/bin/junod /usr/local/bin/junod
 
 RUN echo "INSTALL terrad"
 # "https://docs.terra.money/docs/develop/terrad/install-terrad.html"
 
-RUN git clone https://github.com/terra-money/core
-WORKDIR $DEVPATH/core
+RUN git clone https://github.com/terra-money/core $DEVPATH/chain
+WORKDIR $DEVPATH/chain
 RUN git checkout v2.0.1
 RUN make install
 WORKDIR $DEVPATH
-RUN rm -rf core/
+RUN rm -rf chain/
 RUN mv /root/go/bin/terrad /usr/local/bin/terrad
 
 RUN echo "INSTALL kujirad"
 # "https://docs.kujira.app/validators/run-a-node"
 
-RUN git clone https://github.com/Team-Kujira/core
-WORKDIR $DEVPATH/core
+RUN git clone https://github.com/Team-Kujira/core $DEVPATH/chain
+WORKDIR $DEVPATH/chain
 RUN git checkout v0.4.0
 RUN make install
 WORKDIR $DEVPATH
-RUN rm -rf kujira-core/
+RUN rm -rf chain/
 RUN mv /root/go/bin/kujirad /usr/local/bin/kujirad
+
+WORKDIR $HOME
+RUN rm -rf /root/.cache
+RUN rm -rf /root/go/pkg/mod/cache
 
 RUN trash-empty
