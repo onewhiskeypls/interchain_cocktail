@@ -3,7 +3,6 @@ FROM onewhiskeypls/ubuntu-chrony
 SHELL ["/bin/bash", "-c"]
 
 ENV GO_VERSION=1.18.4
-
 ENV LOCAL=/usr/local
 ENV GOROOT=$LOCAL/go
 ENV HOME=/root
@@ -11,81 +10,51 @@ ENV GOPATH=$HOME/go
 ENV PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 ENV DEVPATH=/root/dev
 
-RUN mkdir $DEVPATH
-
 # docker build creates a new temp container each time, so you need to establish
 # WORKDIR because cd command does
+RUN mkdir -p $GOPATH/bin && mkdir $DEVPATH
 WORKDIR $DEVPATH
-RUN mkdir -p $GOPATH/bin
 
 ENV PACKAGES curl git mercurial make binutils bison gcc build-essential ufw jq snapd unzip wget trash-cli
-RUN apt update
-RUN apt upgrade -y
-RUN apt dist-upgrade -y
-RUN apt install -y $PACKAGES
+RUN apt update && apt upgrade -y && apt dist-upgrade -y && apt install --no-install-recommends -y $PACKAGES
 
 # Install Go
 RUN curl -L https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz | tar -C $LOCAL -xzf -
 
-RUN echo "INSTALL gaiad"
+# "INSTALL gaiad"
 # "https://hub.cosmos.network/main/getting-started/installation.html"
 
 RUN git clone https://github.com/cosmos/gaia.git $DEVPATH/chain
-WORKDIR $DEVPATH/chain
-RUN git checkout v7.0.2
-RUN make install
-WORKDIR $DEVPATH
-RUN rm -rf chain/
-RUN mv /root/go/bin/gaiad /usr/local/bin/gaiad
+RUN cd $DEVPATH/chain && git fetch && git fetch && git checkout v7.0.2 && make install
+RUN rm -rf chain/ && mv /root/go/bin/gaiad /usr/local/bin/gaiad
 
-
-RUN echo "INSTALL osmosisd"
+# "INSTALL osmosisd"
 # "https://docs.osmosis.zone/developing/tools/osmosisd.html#install-osmosis-binary"
 
 RUN git clone https://github.com/osmosis-labs/osmosis $DEVPATH/chain
-WORKDIR $DEVPATH/chain
-RUN git checkout v10.0.1
-RUN make install
-WORKDIR $DEVPATH
-RUN rm -rf chain/
-RUN mv /root/go/bin/osmosisd /usr/local/bin/osmosisd
+RUN cd $DEVPATH/chain && git fetch && git fetch && git checkout v10.0.1 && make install
+RUN rm -rf chain/ && mv /root/go/bin/osmosisd /usr/local/bin/osmosisd
 
-RUN echo "INSTALL junod"
+# "INSTALL junod"
 # "https://docs.junonetwork.io/validators/getting-setup"
 
 RUN git clone https://github.com/CosmosContracts/juno $DEVPATH/chain
-WORKDIR $DEVPATH/chain
-RUN git fetch
-RUN git checkout v8.0.0
-RUN make install
-WORKDIR $DEVPATH
-RUN rm -rf chain/
-RUN mv /root/go/bin/junod /usr/local/bin/junod
+RUN cd $DEVPATH/chain && git fetch && git checkout v8.0.0 && make install
+RUN rm -rf chain/ && mv /root/go/bin/junod /usr/local/bin/junod
 
-RUN echo "INSTALL terrad"
+# "INSTALL terrad"
 # "https://docs.terra.money/docs/develop/terrad/install-terrad.html"
 
 RUN git clone https://github.com/terra-money/core $DEVPATH/chain
-WORKDIR $DEVPATH/chain
-RUN git checkout v2.0.1
-RUN make install
-WORKDIR $DEVPATH
-RUN rm -rf chain/
-RUN mv /root/go/bin/terrad /usr/local/bin/terrad
+RUN cd $DEVPATH/chain && git fetch && git checkout v2.0.1 && make install
+RUN rm -rf chain/ && mv /root/go/bin/terrad /usr/local/bin/terrad
 
-RUN echo "INSTALL kujirad"
+# "INSTALL kujirad"
 # "https://docs.kujira.app/validators/run-a-node"
 
 RUN git clone https://github.com/Team-Kujira/core $DEVPATH/chain
-WORKDIR $DEVPATH/chain
-RUN git checkout v0.4.0
-RUN make install
-WORKDIR $DEVPATH
-RUN rm -rf chain/
-RUN mv /root/go/bin/kujirad /usr/local/bin/kujirad
+RUN cd $DEVPATH/chain && git fetch && git checkout v0.4.0 && make install
+RUN rm -rf chain/ && mv /root/go/bin/kujirad /usr/local/bin/kujirad
 
 WORKDIR $HOME
-RUN rm -rf /root/.cache
-RUN rm -rf /root/go/pkg/mod/cache
-
-RUN trash-empty
+RUN rm -rf /root/.cache && rm -rf /root/go/pkg/mod/cache && trash-empty
