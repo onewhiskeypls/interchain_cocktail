@@ -114,11 +114,15 @@ Note: I had a few troubles with this one, so don't be surprised if this barfs. T
 ```
 # "INSTALL secretcli"
 # "zombied from https://docs.scrt.network/docs/node-runners/node-setup/install-secretd"
+# you may switch the DBTYPE - rocksdb OR goleveldb
+# Note: rocksdb  - works on ubuntu, did not work on m1mac
+# Note: goleveldb - worked on m1 mac, had issues getting it to work on ubuntu
 
+SECRETDBTYPE=rocksdb
 cd ~/dev
-wget "https://github.com/scrtlabs/SecretNetwork/releases/download/v1.3.1/secretnetwork_1.3.1_mainnet_rocksdb_amd64.deb"
+wget "https://github.com/scrtlabs/SecretNetwork/releases/download/v1.3.1/secretnetwork_1.3.1_mainnet_${SECRETDBTYPE}_amd64.deb"
 apt install -y libsnappy1v5
-dpkg -i secretnetwork_1.3.1_mainnet_rocksdb_amd64.deb
-rm secretnetwork_1.3.1_mainnet_rocksdb_amd64.deb
+dpkg -i secretnetwork_1.3.1_mainnet_${SECRETDBTYPE}_amd64.deb
+rm secretnetwork_1.3.1_mainnet_${SECRETDBTYPE}_amd64.deb
 secretcli q account secret1dn540qzhd3kuml0t09zr575yam74tzhqtdf7se --node https://scrt-rpc.blockpane.com:443 -o json
 ```
